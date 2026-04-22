@@ -1,0 +1,21 @@
+{
+  "name": "Kyo_V2_Hacker",
+  "version": "2.0.0",
+  "description": "╚»★『 ᏦᎽᎾ_𝐕𝟐_𝐇𝐀𝐂𝐊𝐄𝐑 』★«╝ — Créé par Orlando-tech — Bot WhatsApp ultime",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["whatsapp", "bot", "hacker", "kyo", "orlando-tech"],
+  "dependencies": {
+    "baileys": "npm:baileys@latest",
+    "axios": "^1.7.7",
+    "wa-sticker-formatter": "^4.4.4",
+    "pino": "^8.18.0",
+    "file-type": "^19.0.0",
+    "form-data": "^4.0.1"
+  },
+  "author": "Orlando-tech (+50935443504)",
+  "license": "ISC"
+}
