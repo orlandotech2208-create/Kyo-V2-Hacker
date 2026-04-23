@@ -1,6 +1,6 @@
 // ╚»★『 ᏦᎽᎾ_𝐕𝟐_𝐇𝐀𝐂𝐊𝐄𝐑 』★«╝
 // Créé par Orlando-tech — +50935443504
-// Bot WhatsApp monolithique — Tout-en-un
+// VERSION TERMUX — Sans wa-sticker-formatter
 
 import {
     makeWASocket,
@@ -10,14 +10,11 @@ import {
     downloadMediaMessage,
     getDevice
 } from 'baileys';
-import { Sticker } from 'wa-sticker-formatter';
 import axios from 'axios';
 import pino from 'pino';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import readline from 'readline';
-import crypto from 'crypto';
 import FormData from 'form-data';
 import { fileTypeFromBuffer } from 'file-type';
 
@@ -119,8 +116,9 @@ async function bugCommand(message, client, texts, num) {
     try {
         const remoteJid = message.key?.remoteJid;
         await client.sendMessage(remoteJid, {
-            image: { url: `database/${num}.jpg` },
-            caption: `> ${texts}`,
+            text: `💥 ${texts}
+
+> ${BOT_NAME}`,
             contextInfo: {
                 externalAdReply: {
                     title: "Join Our WhatsApp Channel",
@@ -128,8 +126,7 @@ async function bugCommand(message, client, texts, num) {
                     mediaType: 1,
                     thumbnailUrl: `https://whatsapp.com/channel/0029VbBT7FdLCoX1TDyQQb1B`,
                     renderLargerThumbnail: false,
-                    mediaUrl: `${num}.jpg`,
-                    sourceUrl: `${num}.jpg`
+                    sourceUrl: `https://whatsapp.com/channel/0029VbBT7FdLCoX1TDyQQb1B`
                 }
             }
         });
@@ -146,11 +143,7 @@ async function pingTest(client, message) {
     await client.sendMessage(remoteJid, { text: "📡 Pinging..." }, { quoted: message });
     const latency = Date.now() - start;
     await client.sendMessage(remoteJid, {
-        text: stylizedChar(`🚀 ${BOT_NAME} Network
-
-Latency: ${latency} ms
-
-${CREATOR}`)
+        text: stylizedChar(`🚀 ${BOT_NAME} Network\n\nLatency: ${latency} ms\n\n${CREATOR}`)
     }, { quoted: message });
 }
 
@@ -161,14 +154,7 @@ async function uptimeCmd(client, message) {
     const hours = Math.floor((uptime % 86400) / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
-    const text = `┌─🤖 ${BOT_NAME} ─┐
-│
-│ ⏱️ Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s
-│ 💾 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1)}MB
-│
-│ "Beyond limits, we rise."
-│     - ${CREATOR} -
-└────────────────────┘`;
+    const text = `┌─🤖 ${BOT_NAME} ─┐\n│\n│ ⏱️ Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s\n│ 💾 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1)}MB\n│\n│ "Beyond limits, we rise."\n│     - ${CREATOR} -\n└────────────────────┘`;
     await client.sendMessage(remoteJid, { text: text });
 }
 
@@ -221,30 +207,14 @@ async function menuCmd(client, message) {
         const date = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
         const day = daysFR[now.getDay()];
 
-        let menuText = `
-${BOT_NAME} 🎯
-👤 Créé par ${CREATOR}
-📱 +${OWNER_NUMBER}
-────────────
-• Prefix   : ${prefix}
-• User     : ${stylizedChar(userName)}
-• Version  : 2.0.0
-• Uptime   : ${uptime}
-• RAM      : ${usedRam}/${totalRam} MB
-• Platform : ${platform}
-• Date     : ${date} - ${stylizedChar(day)}
-────────────
-`;
+        let menuText = `\n${BOT_NAME} 🎯\n👤 Créé par ${CREATOR}\n📱 +${OWNER_NUMBER}\n────────────\n• Prefix   : ${prefix}\n• User     : ${stylizedChar(userName)}\n• Version  : 2.0.0\n• Uptime   : ${uptime}\n• RAM      : ${usedRam}/${totalRam} MB\n• Platform : ${platform}\n• Date     : ${date} - ${stylizedChar(day)}\n────────────\n`;
 
         for (const [category, commands] of Object.entries(commandCategories)) {
             const icon = getCategoryIcon(category);
             const catName = stylizedChar(category);
-            menuText += `┏━━━ ${icon} ${catName} ━━━
-`;
-            commands.forEach(cmd => { menuText += `┃   › ${stylizedChar(cmd)}
-`; });
-            menuText += `┗━━━━━━━━━━━━━━━
-`;
+            menuText += `┏━━━ ${icon} ${catName} ━━━\n`;
+            commands.forEach(cmd => { menuText += `┃   › ${stylizedChar(cmd)}\n`; });
+            menuText += `┗━━━━━━━━━━━━━━━\n`;
         }
         menuText = menuText.trim();
 
@@ -359,9 +329,7 @@ async function tagRespond(client, message) {
         const lid = client.user?.lid?.split(':')[0];
         if (lid && messageBody.includes(`@${lid}`)) {
             await client.sendMessage(remoteJid, {
-                audio: { url: "database/DigiX.mp3" },
-                mimetype: "audio/mp4",
-                ptt: true,
+                text: `🎯 ${BOT_NAME} Tag Response\n\n@${lid}`,
                 contextInfo: { stanzaId: message.key.id, participant: message.key.participant || lid, quotedMessage: message.message }
             });
         }
@@ -902,9 +870,8 @@ async function stickerCmd(client, message) {
         buffer = await downloadMediaMessage({ key: { remoteJid: remoteJid, id: message.message?.extendedTextMessage?.contextInfo?.stanzaId || message.key.id, fromMe: false }, message: { videoMessage: media.videoMessage } }, 'buffer');
     } else return await client.sendMessage(remoteJid, { text: '❌ Réponds à une image ou vidéo.' });
     try {
-        const sticker = new Sticker(buffer, { pack: BOT_NAME, author: CREATOR, type: 'full', categories: ['🤖'], quality: 50, background: '#000000' });
-        const stickerBuffer = await sticker.toBuffer();
-        await client.sendMessage(remoteJid, { sticker: stickerBuffer });
+        // Sticker sans wa-sticker-formatter (Termux compatible)
+        await client.sendMessage(remoteJid, { image: buffer, caption: `🎨 Sticker par ${BOT_NAME}\n⚡ Converti manuellement` });
     } catch (error) { console.error('Sticker error:', error); await client.sendMessage(remoteJid, { text: '❌ Erreur sticker.' }); }
 }
 
@@ -953,13 +920,9 @@ async function takeCmd(client, message) {
     const args = text.trim().split(/\s+/).slice(1);
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     if (!quoted?.stickerMessage) return await client.sendMessage(remoteJid, { text: '❌ Réponds à un sticker.' });
-    const pack = args[0] || BOT_NAME;
-    const author = args[1] || CREATOR;
     try {
         const buffer = await downloadMediaMessage({ key: { remoteJid: remoteJid, id: message.message.extendedTextMessage.contextInfo.stanzaId, fromMe: false }, message: { stickerMessage: quoted.stickerMessage } }, 'buffer');
-        const sticker = new Sticker(buffer, { pack: pack, author: author, type: 'full' });
-        const stickerBuffer = await sticker.toBuffer();
-        await client.sendMessage(remoteJid, { sticker: stickerBuffer });
+        await client.sendMessage(remoteJid, { sticker: buffer });
     } catch { await client.sendMessage(remoteJid, { text: '❌ Erreur.' }); }
 }
 
@@ -1175,15 +1138,7 @@ async function connectToWhatsapp() {
             console.log('✅ WhatsApp connected!');
             try {
                 const chatId = `${OWNER_NUMBER}@s.whatsapp.net`;
-                const messageText = `
-╔══════════════════╗
-   *${BOT_NAME}* 🚀
-╠══════════════════╣
-> "Beyond limits, we rise."
-> Créé par ${CREATOR}
-╚══════════════════╝
-
-*╚»★『 ${BOT_NAME} 』★«╝*`;
+                const messageText = `\n╔══════════════════╗\n   *${BOT_NAME}* 🚀\n╠══════════════════╣\n> "Beyond limits, we rise."\n> Créé par ${CREATOR}\n╚══════════════════╝\n\n*╚»★『 ${BOT_NAME} 』★«╝*`;
                 await sock.sendMessage(chatId, { text: messageText, footer: `💻 Powered by ${CREATOR}` });
                 console.log('📩 Welcome message sent!');
             } catch (err) { console.error('❌ Welcome error:', err); }
